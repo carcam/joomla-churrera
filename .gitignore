@@ -43,8 +43,7 @@ composer.lock
 
 # Phing related #
 #################
-build/ftp.build.properties
-build/paths.build.properties
+paths.build.properties
 
 # Visual Code #
 ###############
