@@ -1,0 +1,9 @@
+boilerplateFolder=FULL PATH TO THE BOILERPLATE FOLDER. Clone it from: https://github.com/joomla-extensions/boilerplate
+extensionAlias=SHORTNAME FOR THE EXTENSION
+extensionName=NATURAL LANGUAGE EXTENSION NAME
+extensionClassName=ALIAS NAME FOR EXTENSION CLASSES
+translationKey=TRANSLATION KEY GLOBAL NAME
+repofolder=FOLDER WHERE TO STORE THE EXTENSION
+author=AUTHOR NAME
+authorEmail=AUTHOR EMAIL
+authorUrl=AUTHOR URL

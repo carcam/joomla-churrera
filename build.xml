@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="setupJoomlaProject" default="setup">
+	<property file="paths.build.properties" />
+	<property name="repopath" value="${codefolder}/${repofolder}" override="true" />
+	<property name="foo" value="${extensionAlias}"/>
+
+	<target name="copyfolders" description="Setup Folders">
+
+		<mkdir dir="${repopath}" />
+		<copy todir="${repopath}">
+			<!--<mapper type="regexp" from="(.*)foo(.*)" to="\1${extensionAlias}\2" />-->
+			<filterchain>
+				<replaceregexp>
+					<regexp pattern="\[EXTENSION_NAME\]" replace="${extensionName}"/>
+					<regexp pattern="\[PACKAGE_NAME\]" replace="${extensionName}"/>
+					<regexp pattern="\[PROJECT_NAME\]" replace="${extensionName}"/>
+					<regexp pattern="\[AUTHOR\]" replace="${author}"/>
+					<regexp pattern="\[AUTHOR_EMAIL\]" replace="${authorEmail}"/>
+					<regexp pattern="\[AUTHOR_URL\]" replace="${authorUrl}"/>
+					<regexp pattern="com_foo" replace="com_${extensionAlias}"/>
+					<regexp pattern="COM_FOO" replace="${translationKey}" ignoreCase="false"/>
+					<regexp pattern="class Foo" replace="class ${extensionClassName}" ignoreCase="false"/>
+					<regexp pattern="foo" replace="${extensionAlias}"/>
+					<regexp pattern="FOO" replace="${translationKey}"/>
+				</replaceregexp>
+			</filterchain>
+			<fileset dir="${boilerplateFolder}" id="boilerplate">
+				<include name="**"></include>
+				<excludesfile name="excludedfiles.build"></excludesfile>
+			</fileset>
+		</copy>
+		<copy file="${boilerplateFolder}/.gitignore" tofile="${repopath}/.gitignore" />
+	</target>
+
+	<target name="replaceFilenames" description="Replace FileNames">
+
+		<fileset dir="${repopath}" id="repofolders">
+			<type type="dir" />
+		</fileset>
+
+		<foreach param="dirname" absparam="absname" target="listNames">
+			<fileset refid="repofolders" />
+		</foreach>
+
+		<foreach param="dirname" absparam="absname" target="listNames">
+			<fileset dir="${repopath}" id="repofolders2">
+				<type type="dir" />
+			</fileset>
+		</foreach>
+
+		<apply executable="rename" dir="${repopath}" >
+			<arg value="s/foo/${extensionAlias}/g" />
+			<srcfile />
+			<fileset dir="${repopath}" id="repofiles">
+			</fileset>
+		</apply>
+
+	</target>
+
+	<target name="listNames" description="Test">
+		<if>
+			<available file='${absname}' type='dir' />
+		    <then>
+				<exec command="rename 's/foo/${extensionAlias}/g' ${absname}" dir="${absname}" checkreturn="false"/>
+			</then>
+		</if>
+	</target>
+
+	<target name="setup" description="Full setup">
+		<phingcall target="copyfolders" />
+		<phingcall target="replaceFilenames" />
+	</target>
+</project>
