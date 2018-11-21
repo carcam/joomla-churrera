@@ -18,6 +18,7 @@
 					<regexp pattern="\[AUTHOR\]" replace="${author}"/>
 					<regexp pattern="\[AUTHOR_EMAIL\]" replace="${authorEmail}"/>
 					<regexp pattern="\[AUTHOR_URL\]" replace="${authorUrl}"/>
+					<regexp pattern="\[COPYRIGHT\]" replace="${copyright}"/>
 					<regexp pattern="com_foo" replace="com_${extensionAlias}"/>
 					<regexp pattern="COM_FOO" replace="${translationKey}" ignoreCase="false"/>
 					<regexp pattern="class Foo" replace="class ${extensionClassName}" ignoreCase="false"/>
