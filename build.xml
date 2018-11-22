@@ -44,26 +44,28 @@
 			<fileset refid="repofolders" />
 		</foreach>
 
-		<foreach param="dirname" absparam="absname" target="listNames">
+		<!-- <foreach param="dirname" absparam="absname" target="listNames">
 			<fileset dir="${repopath}" id="repofolders2">
 				<type type="dir" />
 			</fileset>
-		</foreach>
+		</foreach> -->
 
-		<apply executable="rename" dir="${repopath}" >
+		<!-- <apply executable="rename" dir="${repopath}" >
 			<arg value="s/foo/${extensionAlias}/g" />
 			<srcfile />
 			<fileset dir="${repopath}" id="repofiles">
 			</fileset>
-		</apply>
+		</apply> -->
 
 	</target>
 
-	<target name="listNames" description="Test">
+	<target name="listNames" description="Renames files and folders">
 		<if>
 			<available file='${absname}' type='dir' />
 		    <then>
-				<exec command="rename 's/foo/${extensionAlias}/g' ${absname}" dir="${absname}" checkreturn="false"/>
+				<echo msg="${absname}"/>
+				<exec command="rename foo ${extensionAlias} *" dir="${absname}" checkreturn="false"/>
+				<!-- <exec command="rename 's/foo/${extensionAlias}/g' ${absname}" dir="${absname}" checkreturn="false"/> -->
 			</then>
 		</if>
 	</target>
