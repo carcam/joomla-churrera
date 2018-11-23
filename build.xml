@@ -6,10 +6,8 @@
 	<property name="foo" value="${extensionAlias}"/>
 
 	<target name="copyfolders" description="Setup Folders">
-
 		<mkdir dir="${repopath}" />
 		<copy todir="${repopath}">
-			<!--<mapper type="regexp" from="(.*)foo(.*)" to="\1${extensionAlias}\2" />-->
 			<filterchain>
 				<replaceregexp>
 					<regexp pattern="\[EXTENSION_NAME\]" replace="${extensionName}"/>
@@ -38,6 +36,7 @@
 		<property name="filedepths" value="7,6,5,4,3,2,1" />
 		<foreach list="${filedepths}" param="filedepth" target="browseFolders"/>
 	</target>
+
 	<target name="browseFolders" description="Loop through folder starting from the deepest ones">
 		<foreach param="dirname" absparam="absname" target="listNames">
 			<fileset dir="${repopath}" id="repofolders${filedepth}">
@@ -46,38 +45,7 @@
 			</fileset>
 		</foreach>
 	</target>
-	<!-- <target name="pruebaBucle2" description="">
-		<echo msg="${letra}"/>
-	</target> -->
-
-	<!-- <target name="replaceFilenames" description="Replace FileNames">
-		<property name="filedepths" value="7,6,5,4,3,2,1" />
-		<foreach list="${filedepths}" param="filedepth">
-			<fileset dir="${repopath}" id="repofolders">
-				<type type="dir" />
-				<depth max="${filedepth}" min="${filedepth}"/>
-			</fileset>
-
-			<foreach param="dirname" absparam="absname" target="listNames">
-				<fileset refid="repofolders" />
-			</foreach>
-
-		</foreach>
-		<foreach param="dirname" absparam="absname" target="listNames">
-			<fileset dir="${repopath}" id="repofolders2">
-				<type type="dir" />
-			</fileset>
-		</foreach>
-
-		<apply executable="rename" dir="${repopath}" >
-			<arg value="s/foo/${extensionAlias}/g" />
-			<srcfile />
-			<fileset dir="${repopath}" id="repofiles">
-			</fileset>
-		</apply>
-
-	</target> -->
-
+	
 	<target name="listNames" description="Renames files and folders">
 		<if>
 			<available file='${absname}' type='dir' />
@@ -92,4 +60,5 @@
 		<phingcall target="copyfolders" />
 		<phingcall target="replaceFilenames" />
 	</target>
+
 </project>
