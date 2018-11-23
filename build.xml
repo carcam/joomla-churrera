@@ -35,35 +35,53 @@
 	</target>
 
 	<target name="replaceFilenames" description="Replace FileNames">
-
-		<fileset dir="${repopath}" id="repofolders">
-			<type type="dir" />
-		</fileset>
-
+		<property name="filedepths" value="7,6,5,4,3,2,1" />
+		<foreach list="${filedepths}" param="filedepth" target="browseFolders"/>
+	</target>
+	<target name="browseFolders" description="Loop through folder starting from the deepest ones">
 		<foreach param="dirname" absparam="absname" target="listNames">
-			<fileset refid="repofolders" />
+			<fileset dir="${repopath}" id="repofolders${filedepth}">
+				<type type="dir" />
+				<depth max="${filedepth}"/>
+			</fileset>
 		</foreach>
+	</target>
+	<!-- <target name="pruebaBucle2" description="">
+		<echo msg="${letra}"/>
+	</target> -->
 
-		<!-- <foreach param="dirname" absparam="absname" target="listNames">
+	<!-- <target name="replaceFilenames" description="Replace FileNames">
+		<property name="filedepths" value="7,6,5,4,3,2,1" />
+		<foreach list="${filedepths}" param="filedepth">
+			<fileset dir="${repopath}" id="repofolders">
+				<type type="dir" />
+				<depth max="${filedepth}" min="${filedepth}"/>
+			</fileset>
+
+			<foreach param="dirname" absparam="absname" target="listNames">
+				<fileset refid="repofolders" />
+			</foreach>
+
+		</foreach>
+		<foreach param="dirname" absparam="absname" target="listNames">
 			<fileset dir="${repopath}" id="repofolders2">
 				<type type="dir" />
 			</fileset>
-		</foreach> -->
+		</foreach>
 
-		<!-- <apply executable="rename" dir="${repopath}" >
+		<apply executable="rename" dir="${repopath}" >
 			<arg value="s/foo/${extensionAlias}/g" />
 			<srcfile />
 			<fileset dir="${repopath}" id="repofiles">
 			</fileset>
-		</apply> -->
+		</apply>
 
-	</target>
+	</target> -->
 
 	<target name="listNames" description="Renames files and folders">
 		<if>
 			<available file='${absname}' type='dir' />
 		    <then>
-				<echo msg="${absname}"/>
 				<exec command="rename foo ${extensionAlias} *" dir="${absname}" checkreturn="false"/>
 				<!-- <exec command="rename 's/foo/${extensionAlias}/g' ${absname}" dir="${absname}" checkreturn="false"/> -->
 			</then>
