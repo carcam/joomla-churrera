@@ -6,10 +6,8 @@
 	<property name="foo" value="${extensionAlias}"/>
 
 	<target name="copyfolders" description="Setup Folders">
-
 		<mkdir dir="${repopath}" />
 		<copy todir="${repopath}">
-			<!--<mapper type="regexp" from="(.*)foo(.*)" to="\1${extensionAlias}\2" />-->
 			<filterchain>
 				<replaceregexp>
 					<regexp pattern="\[EXTENSION_NAME\]" replace="${extensionName}"/>
@@ -18,6 +16,7 @@
 					<regexp pattern="\[AUTHOR\]" replace="${author}"/>
 					<regexp pattern="\[AUTHOR_EMAIL\]" replace="${authorEmail}"/>
 					<regexp pattern="\[AUTHOR_URL\]" replace="${authorUrl}"/>
+					<regexp pattern="\[COPYRIGHT\]" replace="${copyright}"/>
 					<regexp pattern="com_foo" replace="com_${extensionAlias}"/>
 					<regexp pattern="COM_FOO" replace="${translationKey}" ignoreCase="false"/>
 					<regexp pattern="class Foo" replace="class ${extensionClassName}" ignoreCase="false"/>
@@ -34,35 +33,25 @@
 	</target>
 
 	<target name="replaceFilenames" description="Replace FileNames">
-
-		<fileset dir="${repopath}" id="repofolders">
-			<type type="dir" />
-		</fileset>
-
-		<foreach param="dirname" absparam="absname" target="listNames">
-			<fileset refid="repofolders" />
-		</foreach>
-
-		<foreach param="dirname" absparam="absname" target="listNames">
-			<fileset dir="${repopath}" id="repofolders2">
-				<type type="dir" />
-			</fileset>
-		</foreach>
-
-		<apply executable="rename" dir="${repopath}" >
-			<arg value="s/foo/${extensionAlias}/g" />
-			<srcfile />
-			<fileset dir="${repopath}" id="repofiles">
-			</fileset>
-		</apply>
-
+		<property name="filedepths" value="7,6,5,4,3,2,1" />
+		<foreach list="${filedepths}" param="filedepth" target="browseFolders"/>
 	</target>
 
-	<target name="listNames" description="Test">
+	<target name="browseFolders" description="Loop through folder starting from the deepest ones">
+		<foreach param="dirname" absparam="absname" target="listNames">
+			<fileset dir="${repopath}" id="repofolders${filedepth}">
+				<type type="dir" />
+				<depth max="${filedepth}"/>
+			</fileset>
+		</foreach>
+	</target>
+	
+	<target name="listNames" description="Renames files and folders">
 		<if>
 			<available file='${absname}' type='dir' />
 		    <then>
-				<exec command="rename 's/foo/${extensionAlias}/g' ${absname}" dir="${absname}" checkreturn="false"/>
+				<exec command="rename foo ${extensionAlias} *" dir="${absname}" checkreturn="false"/>
+				<!-- <exec command="rename 's/foo/${extensionAlias}/g' ${absname}" dir="${absname}" checkreturn="false"/> -->
 			</then>
 		</if>
 	</target>
@@ -71,4 +60,5 @@
 		<phingcall target="copyfolders" />
 		<phingcall target="replaceFilenames" />
 	</target>
+
 </project>

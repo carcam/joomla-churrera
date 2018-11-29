@@ -40,6 +40,7 @@ Thumbs.db
 ############
 vendor
 composer.lock
+composer.json
 
 # Phing related #
 #################
