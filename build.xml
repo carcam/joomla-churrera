@@ -57,6 +57,7 @@
 	
 	<target name="copyBootstrap" description="This target copies the repository .gitignore file">
 		<copy file="bootstrap/.gitignore" tofile="${repopath}/.gitignore" />
+		<copy file="paths.build.properties" tofile="${repopath}/build/paths.build.properties" />
 		<mkdir dir="${repopath}/build" />
 		<copy todir="${repopath}/build">
 			<fileset dir="bootstrap/build" id="builderdir">
