@@ -3,6 +3,7 @@
 <project name="buildJoomlaProject" default="build">
 
     <property file="paths.build.properties" />
+	<property name="repopath" value="${codefolder}/${repofolder}" override="true" />
     <property name="builddir" value="./build" override="true" />
 
     <!-- ============================================  -->
@@ -15,102 +16,81 @@
 		<phingcall target="build-module" />
 		<phingcall target="build-plugins" />
         <phingcall target="build-component" />
-        <phingcall target="build-overrides" />
+        <phingcall target="build-template" />
 	</target>
 
     <!-- ==================  -->
     <!-- Target: Plugins     -->
     <!-- ==================  -->
 	<target name="build-plugins" description="Build Plugins">
-		<property name="pluginFamilies" value="system,user,notifications" />
+		<property name="pluginFamilies" value="authentication, behaviour, content, editors-xtd, fields, finder, search, system, user" />
 		<foreach list="${pluginFamilies}" param="pluginFamily" target="buildPlugin" />
-	</target>
-
-    <!-- ==================  -->
-    <!-- Target: Module     -->
-    <!-- ==================  -->
-	<target name="build-module" description="Build Module">
-		<foreach param="moduleToLoad" target="buildModule" >
-			<fileset dir="../module/">
-				<type type="dir" />
-				<depth max="1" />
-				<excludesfile name="excludedfiles.build"></excludesfile>
-			</fileset>
-		</foreach>
 	</target>
 
 	<!-- ============================================  -->
     <!-- Target: Build Module	 	     		       -->
     <!-- ============================================  -->
-    <target name="buildModule" description="Build Module Task">
-        <copy todir="${builddir}/module">
-			<fileset dir="../module/${moduleToLoad}">
+    <target name="build-module" description="Build Module Task">
+		<echo msg="Building Module  ..." />
+        <zip destfile="${builddir}/mod_${extensionAlias}.zip">
+            <fileset dir="${repopath}/module" id="moduleThing">
                 <include name="**"></include>
-				<excludesfile name="excludedfiles.build"></excludesfile>
+                <excludesfile name="excludedfiles.build"></excludesfile>
             </fileset>
-        </copy>
-		<echo msg="Building Moduel ${moduleToLoad} ..." />
-        <fileset dir="${builddir}/module" id="moduleThing">
-			<include name="**"></include>
-			<excludesfile name="excludedfiles.build"></excludesfile>
-        </fileset>
-		<zip destfile="${builddir}/${moduleToLoad}.zip" basedir="${builddir}/module/" />
-        <delete dir="${builddir}/module" includeemptydirs="true" verbose="true" failonerror="true" />
+        </zip>
 	</target>
 
+	<!-- ============================================  -->
+    <!-- Target: Build Template	 	     		       -->
+    <!-- ============================================  -->
+    <target name="build-template" description="Build Template Task">
+		<echo msg="Building Template  ..." />
+        <zip destfile="${builddir}/tpl_${extensionAlias}.zip">
+            <fileset dir="${repopath}/template" id="templateThing">
+                <include name="**"></include>
+                <excludesfile name="excludedfiles.build"></excludesfile>
+            </fileset>
+        </zip>
+	</target>
 
 	<!-- ============================================  -->
     <!-- Target: Build Plugins	 	     		       -->
     <!-- ============================================  -->
     <target name="buildPlugin" description="Build Plugin Task">
-        <copy todir="${builddir}/plugins">
-			<fileset dir="../plugins/${pluginFamily}">
+    	<echo msg="Building ${pluginFamily} Plugin..." />
+		<zip destfile="${builddir}/plg_${pluginFamily}_${extensionAlias}.zip" >
+            <fileset dir="${repopath}/plugins" id="pluginUrlAccess">
                 <include name="**"></include>
-				<excludesfile name="excludedfiles.build"></excludesfile>
+                <excludesfile name="excludedfiles.build"></excludesfile>
             </fileset>
-        </copy>
-		<echo msg="Building ${pluginFamily} Plugin..." />
-        <fileset dir="${builddir}/plugins" id="pluginUrlAccess">
-			<include name="**"></include>
-			<excludesfile name="excludedfiles.build"></excludesfile>
-        </fileset>
-		<zip destfile="${builddir}/plg_${pluginFamily}_${extensionAlias}.zip" basedir="${builddir}/plugins/" />
-        <delete dir="${builddir}/plugins" includeemptydirs="true" verbose="true" failonerror="true" />
+        </zip>
 	</target>
 
 	<!-- ============================================  -->
     <!-- Target: Copy Plugin	 	     		       -->
     <!-- ============================================  -->
-    <target name="copyPlugin" description="Copy Plugin Task">
+    <!-- <target name="copyPlugin" description="Copy Plugin Task">
 		<copy file="${builddir}/${pluginPackage}" tofile="${builddir}/package/${pluginPackage}" />
-	</target>
+	</target> -->
 
 	<!-- ============================================  -->
     <!-- Target: Copy Module	 	     		       -->
     <!-- ============================================  -->
-    <target name="copyModule" description="Copy Module Task">
+    <!-- <target name="copyModule" description="Copy Module Task">
 		<copy file="${builddir}/${moduleToPack}" tofile="${builddir}/package/${moduleToPack}" />
-	</target>
+	</target> -->
 	
     <!-- ============================================  -->
     <!-- Target: ${extensionAlias} Component       -->
     <!-- ============================================  -->
     <target name="build-component" description="Build Component">
-        <copy todir="${builddir}/component">
-            <fileset dir="../component" defaultexcludes="true">
+		<echo msg="Building ${extensionName} Component..." />
+        <zip destfile="${builddir}/com_${extensionAlias}.zip">
+            <fileset dir="${repopath}/component" defaultexcludes="true">
 				<include name="**"></include>
 				<excludesfile name="excludedfiles.build"></excludesfile>
             </fileset>
-        </copy>
-		
-		<echo msg="Building Economía Circular Component..." />
-        <fileset dir="${builddir}/component" id="componentZip">
-            <include name="**" />
-			<exclude name="**/.svn/**"></exclude>
-			<excludesfile name="excludedfiles.build"></excludesfile>
-        </fileset>
-        <zip destfile="${builddir}/com_${extensionAlias}.zip" basedir="${builddir}/component/" />
-        <delete dir="${builddir}/component" includeemptydirs="true" verbose="true" failonerror="true" />
+        </zip>
     </target>
 
     <!-- ==================  -->
@@ -147,7 +127,7 @@
         </copy>
         <copy file="${builddir}/file_cmoverrides.zip" tofile="${builddir}/package/file_cmoverrides.zip" />
         <copy file="${builddir}/com_${extensionAlias}.zip" tofile="${builddir}/package/com_${extensionAlias}.zip" />
-		<property name="pluginFamilies" value="system,user,search,content" />
+		<property name="pluginFamilies" value="authentication, behaviour, content, editors-xtd, fields, finder, search, system, user" />
 		<foreach param="pluginPackage" target="copyPlugin">
 			<fileset dir="${builddir}">
 				<include name="plg_*.zip"/>
