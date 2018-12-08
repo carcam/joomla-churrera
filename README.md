@@ -25,3 +25,4 @@ This command will copy the boilerplate to the destination folder and it will sub
 `phing build`
 
 This command will package the extension files and folders into a *.zip file ready to install.
+
